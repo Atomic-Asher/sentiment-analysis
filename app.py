@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 from transformers import pipeline
+import matplotlib.pyplot as plt
 
 # Initialize the sentiment analysis pipeline
 sentiment_analyzer = pipeline("sentiment-analysis")
@@ -51,3 +52,13 @@ if uploaded_file is not None:
         # Display the results
         st.write("Results:")
         st.dataframe(df[['content', 'sentiment_label', 'mapped_sentiment']])
+        
+        # Plot the results
+        sentiment_counts = df['sentiment_label'].value_counts()
+        colors = {'POSITIVE': 'green', 'NEGATIVE': 'red', 'NEUTRAL': 'blue'}
+        fig, ax = plt.subplots()
+        sentiment_counts.plot(kind='bar', color=[colors.get(x, 'blue') for x in sentiment_counts.index], ax=ax)
+        ax.set_title('Sentiment Analysis Results')
+        ax.set_xlabel('Sentiment')
+        ax.set_ylabel('Count')
+        st.pyplot(fig)
